@@ -21,13 +21,19 @@ addProg=: '+' ; 5 ; 2
 subProg=: '-' ; 2 ; 1
 divProg=: '/' ; 2 ; 2
 multProg=: '*' ; 4 ; 3
+lessEqProg=: '<=' ; 3 ; 4
+lessEqProgFalse=: '<=' ; 9 ; 4
+Eq=: 'eq?' ; 4 ; 4
+EqFalse=: 'eq?' ; 4 ; 'ds'
 
 NB. Takes in a symbol and two arguments and evaluates the binop.
 binop=: 3 : 0
-if. ((first y) = '+') do. ((second y) + (third y))
-elseif. ((first y) = '-') do. ((second y) - (third y))
-elseif. ((first y) = '/') do. ((second y) % (third y))
-elseif. ((first y) = '*') do. ((second y) * (third y))
+if. ((first y) -: '+') do. ((second y) + (third y))
+elseif. ((first y) -: '-') do. ((second y) - (third y))
+elseif. ((first y) -: '/') do. ((second y) % (third y))
+elseif. ((first y) -: '*') do. ((second y) * (third y))
+elseif. ((first y) -: '<=') do. ((second y) <: (third y))
+elseif. ((first y) -: 'eq?') do. ((second y) -: (third y))
 elseif. 1 do. 0
 end.
 )
@@ -37,6 +43,11 @@ assert (binop addProg) = 7
 assert (binop subProg) = 1
 assert (binop divProg) = 1
 assert (binop multProg) = 12
+assert (binop lessEqProg) = 1
+assert (binop lessEqProgFalse) = 0
+assert (binop lessEqProgFalse) = 0
+assert (binop Eq) = 1
+assert (binop EqFalse) = 0
 
 NB. This is an example recursive function
 factorial=: 3 : 0
