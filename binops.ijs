@@ -11,6 +11,12 @@ third =: 3 : 0
 > 2 { y
 )
 
+get =: 4 : 0
+> y { x
+)
+
+NB. These are variables that are boxes with three things in them
+NB. These can be passed to the binops function.
 addProg=: '+' ; 5 ; 2
 subProg=: '-' ; 2 ; 1
 divProg=: '/' ; 2 ; 2
@@ -41,3 +47,5 @@ end.
 
 assert (factorial 1) = 1
 assert (factorial 3) = 6
+
+addProg get 0
