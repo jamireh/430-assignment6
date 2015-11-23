@@ -17,6 +17,8 @@ getType =: 3 : 0
 (y get 0) 
 )
 
+do =: 0 !: 1
+
 NB. These are variables that are boxes with three things in them
 NB. These can be passed to the binops function.
 addProg=: '+' ; 5 ; 2
@@ -43,14 +45,31 @@ end.
 interp =: 4 : 0
 expr =: x
 env =: y
-if. ((getType expr) -: 'numC') do. (expr get 1)
-elseif. ((getType expr) -: 'binopC') do. (((second expr) interp env) binop ((third expr) interp env)) 
-elseif. 1 do. 0
-end.
+if. ((getType expr) -: 'numC') do. ('numV' ; (expr get 1))
+elseif. ((getType expr) -: 'boolC') do. 
+    if. ((expr get 1) -: 'true') do. ('boolV' ; 1) 
+    elseif. ((expr get 1) -: 'false') do. ('boolV' ; 0)
+    elseif. 1 do. throw
+    end.
+elseif. ((getType expr) -: 'binopC') do. 
+     
 
-assert (('numC' ; 10) interp ('Env' ; '')) = 10
-assert (('binopC' ; '+' ; 5 ; 6) interp ('Env' ; '')) = 11
-NB. This is how we'll do tests
+elseif. ((getType expr) -: 'ifC') do. 
+     test =: ((expr get 1) interp env)
+     if. (getType test) -: 'boolV' do.
+        if. (test get 1) do. ((expr get 2 interp env) 
+        elseif. 1 do. ((expr get 3) interp env)
+        end.
+     elseif. 1 do. throw
+     end.
+elseif. 1 do. throw
+end.
+)
+
+assert ('numC' ; 10) interp ('Env' ; '') = ('numV' ; 10)
+assert ('binopC' ; '+' ; ('numC' ; 5) ; <('numC' ; 6)) interp ('Env' ; '') -: ('numV' ; 11)
+
+
 assert (binop addProg) = 7
 assert (binop subProg) = 1
 assert (binop divProg) = 1
@@ -60,15 +79,3 @@ assert (binop lessEqProgFalse) = 0
 assert (binop lessEqProgFalse) = 0
 assert (binop Eq) = 1
 assert (binop EqFalse) = 0
-
-NB. This is an example recursive function
-factorial=: 3 : 0
-if. y = 1 do. 1
-elseif. 1 do. (factorial y - 1) * y
-end.
-)
-
-assert (factorial 1) = 1
-assert (factorial 3) = 6
-
-addProg get 0
