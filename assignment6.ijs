@@ -43,8 +43,8 @@ end.
 )
 
 interp =: 4 : 0
-expr =: x
-env =: y
+expr =. x
+env =. y
 if. ((getType expr) -: 'numC') do. ('numV' ; (expr get 1))
 elseif. ((getType expr) -: 'boolC') do. 
     if. ((expr get 1) -: 'true') do. ('boolV' ; 1) 
@@ -52,10 +52,9 @@ elseif. ((getType expr) -: 'boolC') do.
     elseif. 1 do. throw
     end.
 elseif. ((getType expr) -: 'binopC') do. 
-     
-
+    ('numV' ; (binop ((second expr) ; (((third expr) interp env) get 1) ; (((expr get 3) interp env) get 1))))
 elseif. ((getType expr) -: 'ifC') do. 
-     test =: ((expr get 1) interp env)
+     test =. ((expr get 1) interp env)
      if. (getType test) -: 'boolV' do.
         if. (test get 1) do. ((expr get 2 interp env) 
         elseif. 1 do. ((expr get 3) interp env)
