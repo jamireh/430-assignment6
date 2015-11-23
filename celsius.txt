@@ -1,6 +1,0 @@
-Celsius =: 3 : 0
-	t =: y - 32
-	t * 5 % 9
-)
-
-Celsius 32
